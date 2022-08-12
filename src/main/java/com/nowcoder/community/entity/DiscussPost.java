@@ -27,4 +27,5 @@ public class DiscussPost
     private int commentCount;
     //帖子分数
     private double score;
+
 }

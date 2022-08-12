@@ -6,9 +6,12 @@ import com.nowcoder.community.dao.DiscussPostMapper;
 import com.nowcoder.community.entity.DiscussPost;
 
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.util.SensitiveFilter;
+import com.nowcoder.community.util.SensitiveFilterCopy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.xml.ws.Action;
 import java.util.List;
@@ -24,6 +27,9 @@ public class DiscussPostServiceImpl extends ServiceImpl<DiscussPostMapper, Discu
 {
     @Autowired
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     /**
      * 功能描述: 分页查询
@@ -70,6 +76,56 @@ public class DiscussPostServiceImpl extends ServiceImpl<DiscussPostMapper, Discu
     public int selectDiscussPostRows(int userId)
     {
         int i = discussPostMapper.selectDiscussPostRows(userId);
+        return i;
+    }
+
+    /**
+     * 功能描述: 新增帖子
+     * @Param: [discussPost]
+     * @Return: int
+     */
+    @Override
+    public int insertDiscussPost(DiscussPost discussPost)
+    {
+        if(discussPost==null){
+            throw new IllegalArgumentException("参数不能为空");
+        }
+        log.info("====================================="+discussPost.getContent());
+
+        //转义html标记
+        discussPost.setTitle(HtmlUtils.htmlEscape(discussPost.getTitle()));
+        discussPost.setContent(HtmlUtils.htmlEscape(discussPost.getContent()));
+        //过滤敏感词
+        discussPost.setTitle(sensitiveFilter.filter(discussPost.getTitle()));
+        discussPost.setContent(sensitiveFilter.filter(discussPost.getContent()));
+
+        log.info("====================================="+discussPost.getContent());
+        int insert = discussPostMapper.insert(discussPost);
+        return insert;
+    }
+
+    /**
+     * 功能描述: 查询帖子详情
+     * @Param: [id]
+     * @Return: com.nowcoder.community.entity.DiscussPost
+     */
+    @Override
+    public DiscussPost selectDiscussPostById(int id)
+    {
+        DiscussPost post = discussPostMapper.selectById(id);
+        return post;
+    }
+
+    /**
+     * 功能描述: 更新帖子评论数量
+     * @Param: [id, commentCount]
+     * @Return: int
+     */
+    public int updateCommentCount(int id, int commentCount)
+    {
+        DiscussPost post = discussPostMapper.selectById(id);
+        post.setCommentCount(commentCount);
+        int i = discussPostMapper.updateById(post);
         return i;
     }
 }

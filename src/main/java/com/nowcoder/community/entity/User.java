@@ -14,6 +14,7 @@ public class User {
     private String salt;
     private String email;
     private int type;
+    //0未激活 1已激活
     private int status;
     //激活码
     private String activationCode;

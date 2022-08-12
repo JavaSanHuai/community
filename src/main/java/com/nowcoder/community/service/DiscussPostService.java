@@ -30,5 +30,26 @@ public interface DiscussPostService extends IService<DiscussPost>
      * @Return:
      */
     //@Param给参数取别名 如果只有一个参数 并且在<if>里使用 则必须加别名
-    int selectDiscussPostRows(@Param("userId") int userId);
+    int selectDiscussPostRows(int userId);
+
+    /**
+     * 功能描述: 新增帖子
+     * @Param: [discussPost]
+     * @Return: int
+     */
+    int insertDiscussPost(DiscussPost discussPost);
+
+    /**
+     * 功能描述: 查询帖子详情
+     * @Param: [id]
+     * @Return: com.nowcoder.community.entity.DiscussPost
+     */
+    DiscussPost selectDiscussPostById(int id);
+
+    /**
+     * 功能描述: 更新帖子评论数量
+     * @Param: [id, commentCount]
+     * @Return: int
+     */
+    int updateCommentCount(int id, int commentCount);
 }

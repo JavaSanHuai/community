@@ -29,6 +29,11 @@ public class HomeController
     @Autowired
     private UserService userService;
 
+    /**
+     * 功能描述: 牛客首页开发
+     * @Param: [model, page]
+     * @Return: org.springframework.ui.Model
+     */
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public Model getIndexPage(Model model, Page page)
     {
